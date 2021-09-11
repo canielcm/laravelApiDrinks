@@ -30,7 +30,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -86,27 +86,47 @@ class AuthController extends Controller
     }
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'name'=>'required',
-            'lastname'=>'required',
-            'email'=> 'required|string|email|max:100|unique:users',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'lastname' => 'required',
+            'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
-            'birthdate' => 'required'
+            'birthdate' => 'required',
         ]);
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(),400);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
         }
 
         $user = User::create(array_merge(
             $validator->validate(),
-            ['password'=>bcrypt($request->password)]
+            ['password' => bcrypt($request->password)]
         ));
-
+        $request->roles ? $user->roles()->attach($request->roles) : $user->roles()->attach(["2"]);
         return response()->json([
-            'message'=> '¡User added successfuly!',
+            'message' => '¡User added successfuly!',
             'user' => $user
-        ],201);
+        ], 201);
+    }
 
 
+    public function update(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+        if($request->name )$user->name=$request->name;
+        if($request->lastname) $user->lastname=$request->lastname;
+        if($request->email) $user->email=$request->email;
+        if($request->password) $user->password= bcrypt($request->password);
+        if($request->birthdate) $user->birthdate=$request->birthdate;
+        $user->save();
+        return response()->json([
+            'message' => '¡User updated successfuly!',
+            'user' => $user
+        ], 201);
+    }
+
+    public function getRoles(Request $request)
+    {
+        $user = User::with('roles')->where('id', $request->id)->first();
+        return $user->roles;
     }
 }

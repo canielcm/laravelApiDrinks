@@ -6,15 +6,16 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Drink;
 
-class DrinkController extends Controller
-{
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api'
-    //     , ['except' => ['index', 'show']]
-    // );
-    // }
+class DrinkController extends Controller
+{   
+    
+    public function __construct()
+    {
+        $this->middleware('auth:api'
+        , ['except' => ['index', 'show', 'getByCategory']]
+    );
+    }
     /**
      * Display a listing of the resource.
      *
@@ -80,7 +81,7 @@ class DrinkController extends Controller
     public function show(Request $request)
     {
         $drink = Drink::join("category", "category.id", "=", "drinks.category_id")
-        ->select("category.name as category", "drinks.name", "drinks.amount", "brand", "discount", "drinks.id", "price", "urlimg", "abv", "drinks.description")->where("drinks.id", $request->id)
+        ->select("category.name as category", "drinks.name", "drinks.amount", "brand", "discount", "drinks.id", "price", "urlimg", "abv", "drinks.description", "category_id")->where("drinks.id", $request->id)
         ->get();
         return $drink;
     }

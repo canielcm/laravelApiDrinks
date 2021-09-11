@@ -28,7 +28,9 @@ Route::group([
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
     Route::post('me', 'App\Http\Controllers\AuthController@me');
-    Route::post('register', 'App\Http\Controllers\AuthController@register');  
+    Route::post('register', 'App\Http\Controllers\AuthController@register');
+    Route::get('roles/{id}', 'App\Http\Controllers\AuthController@getRoles');
+    Route::put('update/{id}', 'App\Http\Controllers\AuthController@update');    
 });
 
 //category
@@ -62,3 +64,4 @@ Route::post('/homes','App\Http\Controllers\HomeController@store');
 
 //purchase
 Route::post('/purchases/{user_id}/{home_id}','App\Http\Controllers\PurchaseController@addPurchase');
+Route::post('/purchases/{user_id}','App\Http\Controllers\PurchaseController@getPurchasesByCostumer');

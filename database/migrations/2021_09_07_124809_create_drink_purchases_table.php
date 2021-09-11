@@ -15,7 +15,7 @@ class CreateDrinkPurchasesTable extends Migration
     {
         Schema::create('drink_purchases', function (Blueprint $table) {
             $table->foreignId('purchase_id')->constrained('purchases');
-            $table->foreignId('drink_id')->constrained('drinks');
+            $table->bigInteger('drink_id');
             $table->integer('amount');
             $table->timestamps();
         });
