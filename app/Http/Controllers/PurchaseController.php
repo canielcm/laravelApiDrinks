@@ -12,6 +12,11 @@ use App\Models\Drink;
 
 class PurchaseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api'
+    );
+    }
     public function addPurchase(Request $request)
     {
         $purchase = new Purchase();
